@@ -1,76 +1,76 @@
-# Neural Machine Translation CLI
+# Unsupervised Neural Machine Translation using Monolingual Corpora
 
-This is a command-line interface for a neural machine translation system.
+This project demonstrates an end-to-end unsupervised machine translation system that requires **no parallel data** for training. It leverages a **frozen pretrained encoder** (MarianMT) and trains **custom GRU decoders per language** using only **monolingual corpora**.
 
-## Load Dataset and Weights
+This approach is highly scalable and ideal for **low-resource languages**, where parallel data is limited or unavailable.
 
-1. Monolingual Corpora: If retraining:
-   - Download the corpora from the [drive link](https://drive.google.com/drive/folders/1Uu6_HB_GOnrR0mrosmXn4XZ8mK-S1mcw?usp=sharing) (folder name: `dataset`) or use your own
-   - Share the path of the corpora.
-2. Weights: If using pretrained weights:
-   - Download from the [drive link](https://drive.google.com/drive/folders/1Uu6_HB_GOnrR0mrosmXn4XZ8mK-S1mcw?usp=sharing) (folder name: `decoders`)
-   - Put the weights in a folder named `decoders`
-   - Make sure the folder is in the same directory as the app.py
-3. Multilingual Corpora: For BLEU and METEOR scores:
-   - Download the files from the [drive link](https://drive.google.com/drive/folders/1Uu6_HB_GOnrR0mrosmXn4XZ8mK-S1mcw?usp=sharing) (folder name: `parallel`)
-   - Put the files in a folder named `parallel`
-   - Make sure the folder is in the same directory as the app.py
+---
 
-### Notes
+## Key Highlights
 
-- The resources in the drive link are for english, french and spanish.
+- No parallel corpora required — only monolingual data
+- Custom decoders per language (English, French, Spanish) trained using **backtranslation**
+- Measured improvement via BLEU, METEOR, TER scores on real-world samples
+- [**Report Attached**](Unsupervised_Neural_Machine_Translation.pdf) — includes implementation details, metrics, and future work
 
-## Usage of app.py
+---
 
-When you run the program, you will be prompted with two options:
+## System Architecture
 
-### Option 0: Create and Train New Model
+![System Architecture](2f96e39c-3cb7-413c-9254-2da2d8a9a038.png)
 
-1. Enter `0` when prompted to create a new model
-2. Specify the number of languages you want to support
-3. For each language:
-   - Enter the language initial (e.g., "en", "fr", "es")
-   - Provide the path to your training corpus
-4. The model will train automatically
-5. After training, you can:
-   - Enter source language
-   - Enter target language
-   - Input your sentence for translation
-   - Choose to continue translating (1) or stop (0)
-6. Finally, choose to save the model (1) or discard it (0)
+### How It Works (Backtranslation Training)
 
-#### Notes
+1. **Input text** (e.g., in Spanish) is passed into a **frozen pretrained MarianMT encoder**.
+2. This is converted into a **shared context vector** (language-agnostic semantic representation).
+3. The corresponding **language-specific decoder** (e.g., Spanish decoder) attempts to **reconstruct the original input**.
+4. The **output text** is compared to the original input to compute **loss**, which is used to update only the decoder weights.
+5. This enables **unsupervised training**, simulating supervised learning with monolingual inputs.
 
-- Change number of epochs as per usage
-- Change batch size as per usage
+---
 
-### Option 1: Use Pre-trained Model
+## Evaluation Results
 
-1. Enter `1` when prompted to use existing model
-2. You can then:
-   - Enter source language
-   - Enter target language
-   - Input your sentence for translation
-   - Choose to continue translating (1) or stop (0)
+We tested our models on the **Tatoeba parallel corpus** and evaluated using BLEU, METEOR, and TER metrics.
 
-## Usage of scores.py
+| Language Pair | BLEU   | METEOR | Comments                    |
+|---------------|--------|--------|-----------------------------|
+| EN → ES       | 0.0809 | 0.1097 | Stronger for Romance pairs |
+| FR → ES       | 0.0957 | 0.1525 | Highest performance         |
+| ES → EN       | 0.0739 | 0.1105 | Consistent across directions|
 
-The system evaluates translation quality using two metrics. Make sure the decoders are stored prior to evaluation. Install the necessary spacy tokenizer for the languages used. Make sure the multilingual datasets are present for all possible language pairs as in the decoders.
 
-### BLEU Score
+---
 
-- Ranges from 0 to 1
-- Higher scores indicate better translations
-- Measures how similar the machine translation is to professional human translations
+## Technologies Used
 
-### METEOR Score
+<p align="left">
+  <!-- Python -->
+  <a href="https://www.python.org" target="_blank" rel="noreferrer" style="margin: 10px;">
+    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="Python" width="40" height="40"/>
+  </a>
 
-- Ranges from 0 to 1
-- Higher scores indicate better translations
-- Considers synonyms and paraphrases when evaluating translation quality
+  <!-- NumPy -->
+  <a href="https://numpy.org/" target="_blank" rel="noreferrer" style="margin: 10px;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/NumPy_logo_2020.svg" alt="NumPy" width="40" height="40"/>
+  </a>
 
-### Test data format
+  <!-- TensorFlow -->
+  <a href="https://www.tensorflow.org/" target="_blank" rel="noreferrer" style="margin: 10px;">
+    <img src="https://www.vectorlogo.zone/logos/tensorflow/tensorflow-icon.svg" alt="TensorFlow" width="40" height="40"/>
+  </a>
 
-- We have used parallel corpus from Tatoeba for testing that maps english-
-  spanish, spanish-french, and english-french.
-- The format of the test data is such that the first line is in the first language, and the second line is the equivalent sentence in the second language.
+  <!-- Hugging Face Transformers -->
+  <a href="https://huggingface.co/transformers/" target="_blank" rel="noreferrer" style="margin: 10px;">
+    <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face" width="40" height="40"/>
+  </a>
+</p>
+
+- Python 3.9+
+- TensorFlow & Keras
+- NumPy
+- HuggingFace Transformers (MarianMT)
+- Tatoeba Corpus for evaluation
+
+
+
