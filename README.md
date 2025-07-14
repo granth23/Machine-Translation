@@ -66,7 +66,7 @@ We tested our models on the **Tatoeba parallel corpus** and evaluated using BLEU
   </a>
 </p>
 
-- Python 3.9+
+- Python 
 - TensorFlow & Keras
 - NumPy
 - HuggingFace Transformers (MarianMT)
