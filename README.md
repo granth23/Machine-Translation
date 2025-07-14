@@ -11,13 +11,11 @@ This approach is highly scalable and ideal for **low-resource languages**, where
 - No parallel corpora required — only monolingual data
 - Custom decoders per language (English, French, Spanish) trained using **backtranslation**
 - Measured improvement via BLEU, METEOR, TER scores on real-world samples
-- [**Report Attached**](Unsupervised_Neural_Machine_Translation.pdf) — includes implementation details, metrics, and future work
+- [**Report Attached**](https://github.com/granth23/Machine-Translation/blob/main/Report_Unsupervised_Neural_Machine_Translation.pdf) — includes implementation details, metrics, and future work
 
 ---
 
 ## System Architecture
-
-![System Architecture](2f96e39c-3cb7-413c-9254-2da2d8a9a038.png)
 
 ### How It Works (Backtranslation Training)
 
@@ -26,6 +24,9 @@ This approach is highly scalable and ideal for **low-resource languages**, where
 3. The corresponding **language-specific decoder** (e.g., Spanish decoder) attempts to **reconstruct the original input**.
 4. The **output text** is compared to the original input to compute **loss**, which is used to update only the decoder weights.
 5. This enables **unsupervised training**, simulating supervised learning with monolingual inputs.
+
+<img width="1600" height="1014" alt="image" src="https://github.com/user-attachments/assets/37e9c1c5-0e23-415b-9403-e897dda6fd64" />
+
 
 ---
 
